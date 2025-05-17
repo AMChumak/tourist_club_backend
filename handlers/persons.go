@@ -24,3 +24,18 @@ func CreatePerson(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
 }
+
+func FindPersons(w http.ResponseWriter, r *http.Request) {
+	section := r.FormValue("section")
+	group := r.FormValue("group")
+	sex := r.FormValue("sex")
+	birthYear := r.FormValue("birthYear")
+	age := r.FormValue("age")
+
+	data, err := services.GetPersonsWithCondition(section, group, sex, birthYear, age)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, data)
+}

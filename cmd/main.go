@@ -43,7 +43,7 @@ func main() {
 	})
 
 	r.HandleFunc("/persons/create", handlers.CreatePerson).Methods("POST")
-	r.HandleFunc("/persons/find", handlers.FindPersons).Methods("GET")
+	r.HandleFunc("/persons/filter", handlers.FindPersons).Methods("GET")
 	//listen
 	addr := fmt.Sprintf(":%s", listenPort)
 	if err := http.ListenAndServe(addr, h); err != nil {
