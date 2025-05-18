@@ -183,3 +183,153 @@ func GetTouristsByAge(pg *db.Postgres, ctx context.Context, age int) ([]model.Pe
 
 	return persons, nil
 }
+
+func GetAllTrainers(pg *db.Postgres, ctx context.Context) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic 
+              from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  where role = 2`
+
+	rows, err := pg.Db.Query(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("unable to insert row: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetTrainersBySection(pg *db.Postgres, ctx context.Context, section int) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic               
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  where role = 2 and section = @section`
+	args := pgx.NamedArgs{
+		"section": section,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to insert row: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetTrainersBySex(pg *db.Postgres, ctx context.Context, sex int) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  join persons_attrs_int
+			  on persons.id = persons_attrs_int.person
+			  where role = 2 and persons_attrs_int.attr = 1 and persons_attrs_int.value = @sex`
+	args := pgx.NamedArgs{
+		"sex": sex,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to insert row: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetTrainersByAge(pg *db.Postgres, ctx context.Context, age int) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  join persons_attrs_date
+			  on persons.id = persons_attrs_date.person
+			  where role = 2 and persons_attrs_date.attr = 2 and @age = extract(year from age(persons_attrs_date.value))`
+	args := pgx.NamedArgs{
+		"age": age,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to insert row: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetTrainersBySalary(pg *db.Postgres, ctx context.Context, salary int) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  join persons_attrs_int
+			  on persons.id = persons_attrs_int.person
+			  where (role = 2) and persons_attrs_int.attr = 3 and persons_attrs_int.value = @salary`
+	args := pgx.NamedArgs{
+		"salary": salary,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to insert row: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetTrainersBySpecialization(pg *db.Postgres, ctx context.Context, specialization string) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  join persons_attrs_text
+		 	  on persons.id = persons_attrs_text.person
+		      where (role = 2) and persons_attrs_text.attr = 4 and persons_attrs_text.value = @specialization`
+	args := pgx.NamedArgs{
+		"specialization": specialization,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to insert row: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}

@@ -25,14 +25,29 @@ func CreatePerson(w http.ResponseWriter, r *http.Request) {
 	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
 }
 
-func FindPersons(w http.ResponseWriter, r *http.Request) {
+func FindTourists(w http.ResponseWriter, r *http.Request) {
 	section := r.FormValue("section")
 	group := r.FormValue("group")
 	sex := r.FormValue("sex")
 	birthYear := r.FormValue("birthYear")
 	age := r.FormValue("age")
 
-	data, err := services.GetPersonsWithCondition(section, group, sex, birthYear, age)
+	data, err := services.GetTouristsWithCondition(section, group, sex, birthYear, age)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, data)
+}
+
+func FindTrainers(w http.ResponseWriter, r *http.Request) {
+	section := r.FormValue("section")
+	sex := r.FormValue("sex")
+	age := r.FormValue("age")
+	salary := r.FormValue("salary")
+	specialization := r.FormValue("specialization")
+
+	data, err := services.GetTrainersWithCondition(section, sex, age, salary, specialization)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 		return

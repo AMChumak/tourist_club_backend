@@ -71,7 +71,7 @@ func checkParameter(pg *db.Postgres, parameter string, searchFunc func(pg *db.Po
 	return result, nil
 }
 
-func GetPersonsWithCondition(section string, group string, sex string, birthYear string, age string) (*dto.PersonsListResponse, error) {
+func GetTouristsWithCondition(section string, group string, sex string, birthYear string, age string) (*dto.PersonsListResponse, error) {
 	pg, err := db.NewPG(context.Background())
 	if err != nil {
 		return nil, err
@@ -101,6 +101,60 @@ func GetPersonsWithCondition(section string, group string, sex string, birthYear
 	result, err = checkParameter(pg, age, dbqueries.GetTouristsByAge, result)
 	if err != nil {
 		return nil, err
+	}
+
+	var response dto.PersonsListResponse
+
+	for _, person := range result {
+		var jsonPerson dto.PersonResponse
+		jsonPerson.Id = person.Id
+		jsonPerson.Name = person.Name
+		jsonPerson.Surname = person.Surname
+		jsonPerson.Patronymic = person.Patronymic
+
+		response.Persons = append(response.Persons, jsonPerson)
+	}
+
+	response.Total = 1
+	response.Page = 0
+
+	return &response, nil
+}
+
+func GetTrainersWithCondition(section string, sex string, age string, salary string, specialization string) (*dto.PersonsListResponse, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := dbqueries.GetAllTrainers(pg, context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	result, err = checkParameter(pg, section, dbqueries.GetTrainersBySection, result)
+	if err != nil {
+		return nil, err
+	}
+	result, err = checkParameter(pg, sex, dbqueries.GetTrainersBySex, result)
+	if err != nil {
+		return nil, err
+	}
+	result, err = checkParameter(pg, age, dbqueries.GetTrainersByAge, result)
+	if err != nil {
+		return nil, err
+	}
+	result, err = checkParameter(pg, salary, dbqueries.GetTrainersBySalary, result)
+	if err != nil {
+		return nil, err
+	}
+
+	if specialization != "" {
+		resultPart, err := dbqueries.GetTrainersBySpecialization(pg, context.Background(), specialization)
+		if err != nil {
+			return nil, err
+		}
+		result = intersection(result, resultPart)
 	}
 
 	var response dto.PersonsListResponse
