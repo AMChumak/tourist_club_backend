@@ -333,3 +333,34 @@ func GetTrainersBySpecialization(pg *db.Postgres, ctx context.Context, specializ
 
 	return persons, nil
 }
+
+func GetTrainersByWorkout(pg *db.Postgres, ctx context.Context, groupNum int, fromDate string, toDate string) ([]model.Person, error) {
+	query := `select distinct persons.id, name, surname, patronymic
+			  from persons
+			  join workout_descriptions as wd
+			  on persons.id = wd.trainer
+			  join workouts
+			  on workouts.description = wd.id
+			  join groups_workouts 
+			  on groups_workouts.workout = wd.id
+			  join groups on groups.id = groups_workouts.group_id
+			  where @groupNum = groups.group_number and workouts.date between @from and @to`
+	args := pgx.NamedArgs{
+		"groupNum": groupNum,
+		"from":     fromDate,
+		"to":       toDate,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to do query GetTrainersByWorkout: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}

@@ -55,13 +55,13 @@ func checkParameter[T comparable](pg *db.Postgres, parameter string, searchFunc 
 	}
 	if parameter != "" {
 
-		sectionReady, err := strconv.Atoi(parameter)
+		parameterReady, err := strconv.Atoi(parameter)
 
 		if err != nil {
 			return result, err
 		}
 
-		resultPart, err := searchFunc(pg, context.Background(), sectionReady)
+		resultPart, err := searchFunc(pg, context.Background(), parameterReady)
 
 		if err != nil {
 			return result, err
@@ -156,6 +156,44 @@ func GetTrainersWithCondition(section string, sex string, age string, salary str
 		}
 		result = intersection(result, resultPart)
 	}
+
+	var response dto.PersonsListResponse
+
+	for _, person := range result {
+		var jsonPerson dto.PersonResponse
+		jsonPerson.Id = person.Id
+		jsonPerson.Name = person.Name
+		jsonPerson.Surname = person.Surname
+		jsonPerson.Patronymic = person.Patronymic
+
+		response.Persons = append(response.Persons, jsonPerson)
+	}
+
+	response.Total = 1
+	response.Page = 0
+
+	return &response, nil
+}
+
+func GetTrainersByWorkout(groupNum string, fromDate string, toDate string) (*dto.PersonsListResponse, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	groupNumInt, err := strconv.Atoi(groupNum)
+	if err != nil {
+		return nil, err
+	}
+
+	if fromDate == "" {
+		fromDate = "0001-01-01"
+	}
+	if toDate == "" {
+		toDate = "2999-01-01"
+	}
+
+	result, err := dbqueries.GetTrainersByWorkout(pg, context.Background(), groupNumInt, fromDate, toDate)
 
 	var response dto.PersonsListResponse
 

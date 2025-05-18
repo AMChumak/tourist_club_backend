@@ -54,3 +54,15 @@ func FindTrainers(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.RespondWithJSON(w, http.StatusOK, data)
 }
+
+func FindTrainersByWorkouts(w http.ResponseWriter, r *http.Request) {
+	group := r.FormValue("group")
+	from := r.FormValue("from_date")
+	to := r.FormValue("to_date")
+	data, err := services.GetTrainersByWorkout(group, from, to)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, data)
+}
