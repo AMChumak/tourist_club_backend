@@ -83,7 +83,7 @@ func GetTouristsBySection(pg *db.Postgres, ctx context.Context, section int) ([]
 }
 
 func GetTouristsByGroup(pg *db.Postgres, ctx context.Context, groupId int) ([]model.Person, error) {
-	query := `select distinct count(*)
+	query := `select distinct id, name, surname, patronymic 
 			  from persons
 			  join groups_persons 
 			  on persons.id = groups_persons.person
