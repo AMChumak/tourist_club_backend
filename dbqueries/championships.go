@@ -32,7 +32,7 @@ func GetAllChampionships(pg *db.Postgres, ctx context.Context) ([]model.Champion
 
 	rows, err := pg.Db.Query(ctx, query)
 	if err != nil {
-		return nil, fmt.Errorf("unable to do query: %w", err)
+		return nil, fmt.Errorf("unable to do query GetAllChampionships: %w", err)
 	}
 
 	defer rows.Close()
@@ -60,7 +60,7 @@ func GetAllChampionshipsBySection(pg *db.Postgres, ctx context.Context, section 
 
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to query: %w", err)
+		return nil, fmt.Errorf("unable to query GetAllChampionshipsBySection: %w", err)
 	}
 
 	defer rows.Close()

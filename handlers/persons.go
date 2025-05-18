@@ -29,7 +29,7 @@ func FindTourists(w http.ResponseWriter, r *http.Request) {
 	section := r.FormValue("section")
 	group := r.FormValue("group")
 	sex := r.FormValue("sex")
-	birthYear := r.FormValue("birthYear")
+	birthYear := r.FormValue("birth_year")
 	age := r.FormValue("age")
 
 	data, err := services.GetTouristsWithCondition(section, group, sex, birthYear, age)
@@ -48,6 +48,20 @@ func FindTrainers(w http.ResponseWriter, r *http.Request) {
 	specialization := r.FormValue("specialization")
 
 	data, err := services.GetTrainersWithCondition(section, sex, age, salary, specialization)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, data)
+}
+
+func FindManagers(w http.ResponseWriter, r *http.Request) {
+	birthYear := r.FormValue("birth_year")
+	beginYear := r.FormValue("begin_year")
+	age := r.FormValue("age")
+	salary := r.FormValue("salary")
+
+	data, err := services.GetManagersWithCondition(salary, birthYear, age, beginYear)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 		return

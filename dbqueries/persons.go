@@ -364,3 +364,129 @@ func GetTrainersByWorkout(pg *db.Postgres, ctx context.Context, groupNum int, fr
 
 	return persons, nil
 }
+
+func GetAllManagers(pg *db.Postgres, ctx context.Context) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  where role = 3`
+
+	rows, err := pg.Db.Query(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("unable to do query GetAllTrainers: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetManagersBySalary(pg *db.Postgres, ctx context.Context, salary int) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  join persons_attrs_int
+			  on persons.id = persons_attrs_int.person
+			  where (role = 3) and persons_attrs_int.attr = 6 and persons_attrs_int.value = @salary`
+	args := pgx.NamedArgs{
+		"salary": salary,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to do query GetTrainersBySalary: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetManagersByBirthYear(pg *db.Postgres, ctx context.Context, year int) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  join persons_attrs_date
+			  on persons.id = persons_attrs_date.person
+			  where role = 3 and persons_attrs_date.attr = 2 and @year = extract(year from persons_attrs_date.value)`
+	args := pgx.NamedArgs{
+		"year": year,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to do query GetTouristsByBirthYEar: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetManagersByAge(pg *db.Postgres, ctx context.Context, age int) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  join persons_attrs_date
+			  on persons.id = persons_attrs_date.person
+			  where role = 3 and persons_attrs_date.attr = 2 and @age = extract(year from age(persons_attrs_date.value))`
+	args := pgx.NamedArgs{
+		"age": age,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to do query GetTouristsByAge: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetManagersByBeginYear(pg *db.Postgres, ctx context.Context, year int) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  join persons_attrs_date
+			  on persons.id = persons_attrs_date.person
+			  where role = 3 and persons_attrs_date.attr = 5 and @year = extract(year from persons_attrs_date.value)`
+	args := pgx.NamedArgs{
+		"year": year,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to do query GetTouristsByAge: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}

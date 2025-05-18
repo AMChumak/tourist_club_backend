@@ -212,3 +212,49 @@ func GetTrainersByWorkout(groupNum string, fromDate string, toDate string) (*dto
 
 	return &response, nil
 }
+
+func GetManagersWithCondition(salary string, birthYear string, age string, beginYear string) (*dto.PersonsListResponse, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := dbqueries.GetAllManagers(pg, context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	result, err = checkParameter(pg, salary, dbqueries.GetManagersBySalary, result)
+	if err != nil {
+		return nil, err
+	}
+	result, err = checkParameter(pg, beginYear, dbqueries.GetManagersByBeginYear, result)
+	if err != nil {
+		return nil, err
+	}
+	result, err = checkParameter(pg, birthYear, dbqueries.GetManagersByBirthYear, result)
+	if err != nil {
+		return nil, err
+	}
+	result, err = checkParameter(pg, age, dbqueries.GetManagersByAge, result)
+	if err != nil {
+		return nil, err
+	}
+
+	var response dto.PersonsListResponse
+
+	for _, person := range result {
+		var jsonPerson dto.PersonResponse
+		jsonPerson.Id = person.Id
+		jsonPerson.Name = person.Name
+		jsonPerson.Surname = person.Surname
+		jsonPerson.Patronymic = person.Patronymic
+
+		response.Persons = append(response.Persons, jsonPerson)
+	}
+
+	response.Total = 1
+	response.Page = 0
+
+	return &response, nil
+}
