@@ -29,7 +29,7 @@ func rows2Persons(rows pgx.Rows) ([]model.Person, error) {
 		person := model.Person{}
 		err := rows.Scan(&person.Id, &person.Name, &person.Surname, &person.Patronymic)
 		if err != nil {
-			return nil, fmt.Errorf("unable to insert row: %w", err)
+			return nil, fmt.Errorf("unable to convert row to person model: %w", err)
 		}
 		persons = append(persons, person)
 	}
@@ -45,7 +45,7 @@ func GetAllTourists(pg *db.Postgres, ctx context.Context) ([]model.Person, error
 
 	rows, err := pg.Db.Query(ctx, query)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetAllTourists: %w", err)
 	}
 
 	defer rows.Close()
@@ -69,7 +69,7 @@ func GetTouristsBySection(pg *db.Postgres, ctx context.Context, section int) ([]
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTouristsBySection: %w", err)
 	}
 
 	defer rows.Close()
@@ -93,7 +93,7 @@ func GetTouristsByGroup(pg *db.Postgres, ctx context.Context, groupId int) ([]mo
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTouristsByGroup: %w", err)
 	}
 
 	defer rows.Close()
@@ -119,7 +119,7 @@ func GetTouristsBySex(pg *db.Postgres, ctx context.Context, sex int) ([]model.Pe
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTouristsBySex: %w", err)
 	}
 
 	defer rows.Close()
@@ -145,7 +145,7 @@ func GetTouristsByBirthYear(pg *db.Postgres, ctx context.Context, year int) ([]m
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTouristsByBirthYEar: %w", err)
 	}
 
 	defer rows.Close()
@@ -171,7 +171,7 @@ func GetTouristsByAge(pg *db.Postgres, ctx context.Context, age int) ([]model.Pe
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTouristsByAge: %w", err)
 	}
 
 	defer rows.Close()
@@ -193,7 +193,7 @@ func GetAllTrainers(pg *db.Postgres, ctx context.Context) ([]model.Person, error
 
 	rows, err := pg.Db.Query(ctx, query)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetAllTrainers: %w", err)
 	}
 
 	defer rows.Close()
@@ -217,7 +217,7 @@ func GetTrainersBySection(pg *db.Postgres, ctx context.Context, section int) ([]
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTrainersBySection: %w", err)
 	}
 
 	defer rows.Close()
@@ -243,7 +243,7 @@ func GetTrainersBySex(pg *db.Postgres, ctx context.Context, sex int) ([]model.Pe
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTrainersBySex: %w", err)
 	}
 
 	defer rows.Close()
@@ -269,7 +269,7 @@ func GetTrainersByAge(pg *db.Postgres, ctx context.Context, age int) ([]model.Pe
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTrainersByAge: %w", err)
 	}
 
 	defer rows.Close()
@@ -295,7 +295,7 @@ func GetTrainersBySalary(pg *db.Postgres, ctx context.Context, salary int) ([]mo
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTrainersBySalary: %w", err)
 	}
 
 	defer rows.Close()
@@ -321,7 +321,7 @@ func GetTrainersBySpecialization(pg *db.Postgres, ctx context.Context, specializ
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return nil, fmt.Errorf("unable to insert row: %w", err)
+		return nil, fmt.Errorf("unable to do query GetTrainersBySpecialization: %w", err)
 	}
 
 	defer rows.Close()

@@ -49,7 +49,7 @@ func intersection[T comparable](a, b []T) []T {
 	return a
 }
 
-func checkParameter(pg *db.Postgres, parameter string, searchFunc func(pg *db.Postgres, ctx context.Context, section int) ([]model.Person, error), result []model.Person) ([]model.Person, error) {
+func checkParameter[T comparable](pg *db.Postgres, parameter string, searchFunc func(pg *db.Postgres, ctx context.Context, section int) ([]T, error), result []T) ([]T, error) {
 	if len(result) == 0 {
 		return result, nil
 	}
