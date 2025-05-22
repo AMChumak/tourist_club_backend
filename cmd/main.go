@@ -50,6 +50,33 @@ func main() {
 	r.HandleFunc("/trainers/workout-filter", handlers.FindTrainersByWorkouts).Methods("GET")
 	r.HandleFunc("/workouts/strain", handlers.GetStrain).Methods("GET")
 	r.HandleFunc("/tourists/tour-filter", handlers.FindTouristsByTour).Methods("GET")
+	r.HandleFunc("/routes/filter", handlers.FindRoutes).Methods("GET")
+	r.HandleFunc("/routes/geofilter", handlers.FindRoutesWithGeo).Methods("GET")
+	r.HandleFunc("/instructors/filter", handlers.FindInstructors).Methods("GET")
+	r.HandleFunc("/tourists/trainer-instructor", handlers.FindTouristsWithTrainerInstructor).Methods("GET")
+	r.HandleFunc("/tourists/completed-all", handlers.FindTouristsCompletedAll).Methods("GET")
+	r.HandleFunc("/tourists/completed", handlers.FindTouristsCompletedRoutes).Methods("GET")
+
+	r.HandleFunc("/persons/roles", handlers.GetPersonRole).Methods("GET")
+	r.HandleFunc("/persons/roles", handlers.SetPersonRole).Methods("POST")
+	r.HandleFunc("/persons/roles", handlers.DeletePersonRole).Methods("DELETE")
+
+	r.HandleFunc("/persons/attribute", handlers.CreatePersonAttribute).Methods("POST")
+	r.HandleFunc("/persons/attribute", handlers.GetPersonAttribute).Methods("GET")
+	r.HandleFunc("/persons/attribute", handlers.SetPersonAttribute).Methods("PATCH")
+	r.HandleFunc("/persons/attribute", handlers.DeletePersonAttribute).Methods("DELETE")
+
+	r.HandleFunc("/groups/group", handlers.CreateGroup).Methods("POST")
+	r.HandleFunc("/groups/group", handlers.GetGroup).Methods("GET")
+	r.HandleFunc("/groups/group", handlers.UpdateGroup).Methods("PATCH")
+	r.HandleFunc("/groups/group", handlers.DeleteGroup).Methods("DELETE")
+
+	r.HandleFunc("/groups/members", handlers.GetGroupMembers).Methods("GET")
+	r.HandleFunc("/groups/members/add", handlers.AddGroupMember).Methods("POST")
+	r.HandleFunc("/groups/members/remove", handlers.RemoveGroupMember).Methods("DELETE")
+
+	r.HandleFunc("/groups/list", handlers.GetAllGroups).Methods("GET")
+
 	//listen
 	addr := fmt.Sprintf(":%s", listenPort)
 	if err := http.ListenAndServe(addr, h); err != nil {

@@ -258,3 +258,170 @@ func GetManagersWithCondition(salary string, birthYear string, age string, begin
 
 	return &response, nil
 }
+
+func GetPersonRole(person string, section string) (*dto.PersonRole, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return nil, err
+	}
+	sectionInt, err := strconv.Atoi(section)
+	if err != nil {
+		return nil, err
+	}
+
+	role, err := dbqueries.GetPersonRole(pg, context.Background(), personInt, sectionInt)
+
+	var jsonRole dto.PersonRole
+	if role.Valid {
+		jsonRole.Role = int(role.Int32)
+		return &jsonRole, nil
+	}
+	return nil, nil
+}
+
+func SetPersonRole(person string, section string, role string) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return err
+	}
+	sectionInt, err := strconv.Atoi(section)
+	if err != nil {
+		return err
+	}
+	roleInt, err := strconv.Atoi(role)
+	if err != nil {
+		return err
+	}
+
+	err = dbqueries.UpdatePersonRole(pg, context.Background(), personInt, sectionInt, roleInt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeletePersonRole(person string, section string) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return err
+	}
+	sectionInt, err := strconv.Atoi(section)
+	if err != nil {
+		return err
+	}
+
+	err = dbqueries.DeletePersonRole(pg, context.Background(), personInt, sectionInt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CreatePersonAttribute(attr dto.PersonAttribute) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	var attrModel model.Attribute
+
+	attrModel.Id = attr.Id
+	attrModel.Name = attr.Name
+	attrModel.Type = attr.Type
+	if attr.Role >= 0 {
+		attrModel.Role.Int32 = attr.Role
+	} else {
+		attrModel.Role.Valid = false
+	}
+
+	err = dbqueries.CreateAttribute(pg, context.Background(), attrModel)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetPersonAttribute(id string) (*dto.PersonAttribute, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	idInt, err := strconv.Atoi(id)
+
+	var attr dto.PersonAttribute
+	var attrModel *model.Attribute
+	attrModel, err = dbqueries.GetAttribute(pg, context.Background(), idInt)
+	if err != nil {
+		return nil, err
+	}
+	if attrModel == nil {
+		return nil, nil
+	}
+	attr.Name = attrModel.Name
+	attr.Type = attrModel.Type
+	attr.Id = attrModel.Id
+	if attrModel.Role.Valid {
+		attr.Role = int32(attrModel.Role.Int32)
+	} else {
+		attr.Role = -1
+	}
+	return &attr, nil
+}
+
+func SetPersonAttribute(attr dto.PersonAttribute) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	var attrModel model.Attribute
+
+	attrModel.Id = attr.Id
+	attrModel.Name = attr.Name
+	attrModel.Type = attr.Type
+	if attr.Role >= 0 {
+		attrModel.Role.Int32 = attr.Role
+	} else {
+		attrModel.Role.Valid = false
+	}
+
+	err = dbqueries.UpdateAttribute(pg, context.Background(), attrModel)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeletePersonAttribute(attr string) error {
+	attrInt, err := strconv.Atoi(attr)
+	if err != nil {
+		return err
+	}
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+	err = dbqueries.DeleteAttribute(pg, context.Background(), attrInt)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
