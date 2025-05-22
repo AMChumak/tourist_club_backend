@@ -182,3 +182,25 @@ func GetAllGroups() ([]dto.Group, error) {
 
 	return result, nil
 }
+
+func GetAllSections() ([]dto.Section, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	sections, err := dbqueries.GetAllSections(pg, context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	var result []dto.Section
+	for _, section := range sections {
+		var jsonSection dto.Section
+		jsonSection.Id = section.Id
+		jsonSection.Title = section.Title
+		result = append(result, jsonSection)
+	}
+
+	return result, nil
+}

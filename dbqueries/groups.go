@@ -25,7 +25,7 @@ func rows2Sections(rows pgx.Rows) ([]model.Section, error) {
 	var sections []model.Section
 	for rows.Next() {
 		section := model.Section{}
-		err := rows.Scan(&section.Id)
+		err := rows.Scan(&section.Id, &section.Title)
 		if err != nil {
 			return nil, fmt.Errorf("convert to section model error: %w", err)
 		}

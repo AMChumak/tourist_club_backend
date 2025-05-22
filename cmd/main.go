@@ -61,6 +61,8 @@ func main() {
 	r.HandleFunc("/persons/roles", handlers.SetPersonRole).Methods("POST")
 	r.HandleFunc("/persons/roles", handlers.DeletePersonRole).Methods("DELETE")
 
+	r.HandleFunc("/roles/list", handlers.GetAllRoles).Methods("GET")
+
 	r.HandleFunc("/persons/attribute", handlers.CreatePersonAttribute).Methods("POST")
 	r.HandleFunc("/persons/attribute", handlers.GetPersonAttribute).Methods("GET")
 	r.HandleFunc("/persons/attribute", handlers.SetPersonAttribute).Methods("PATCH")
@@ -76,6 +78,8 @@ func main() {
 	r.HandleFunc("/groups/members/remove", handlers.RemoveGroupMember).Methods("DELETE")
 
 	r.HandleFunc("/groups/list", handlers.GetAllGroups).Methods("GET")
+
+	r.HandleFunc("/sections/list", handlers.GetAllSections).Methods("GET")
 
 	//listen
 	addr := fmt.Sprintf(":%s", listenPort)

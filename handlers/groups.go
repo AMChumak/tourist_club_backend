@@ -109,3 +109,12 @@ func GetAllGroups(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.RespondWithJSON(w, http.StatusOK, groups)
 }
+
+func GetAllSections(w http.ResponseWriter, r *http.Request) {
+	sections, err := services.GetAllSections()
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, sections)
+}

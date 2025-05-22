@@ -213,7 +213,7 @@ func GetTrainersByWorkout(groupNum string, fromDate string, toDate string) (*dto
 	return &response, nil
 }
 
-func GetManagersWithCondition(salary string, birthYear string, age string, beginYear string) (*dto.PersonsListResponse, error) {
+func GetManagersWithCondition(salary string, birthYear string, age string, beginYear string, sex string) (*dto.PersonsListResponse, error) {
 	pg, err := db.NewPG(context.Background())
 	if err != nil {
 		return nil, err
@@ -237,6 +237,10 @@ func GetManagersWithCondition(salary string, birthYear string, age string, begin
 		return nil, err
 	}
 	result, err = checkParameter(pg, age, dbqueries.GetManagersByAge, result)
+	if err != nil {
+		return nil, err
+	}
+	result, err = checkParameter(pg, sex, dbqueries.GetManagersBySex, result)
 	if err != nil {
 		return nil, err
 	}
@@ -424,4 +428,25 @@ func DeletePersonAttribute(attr string) error {
 	}
 
 	return nil
+}
+
+func GetAllRoles() ([]dto.Role, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	rolesModel, err := dbqueries.GetAllRoles(pg, context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	var roles []dto.Role
+	for _, role := range rolesModel {
+		var jsonRole dto.Role
+		jsonRole.Id = role.Id
+		jsonRole.Role = role.Role
+		roles = append(roles, jsonRole)
+	}
+	return roles, nil
 }

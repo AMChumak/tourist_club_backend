@@ -64,3 +64,8 @@ type Section struct {
 	Id    int32  `json:"id"`
 	Title string `json:"title"`
 }
+
+type Role struct {
+	Id   int32  `json:"id"`
+	Role string `json:"role"`
+}

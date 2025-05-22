@@ -50,3 +50,8 @@ type Section struct {
 	Id    int32
 	Title string
 }
+
+type Role struct {
+	Id   int32
+	Role string
+}

@@ -64,6 +64,34 @@ func rows2Attributes(rows pgx.Rows) ([]model.Attribute, error) {
 	return attrs, nil
 }
 
+func rows2Roles(rows pgx.Rows) ([]model.Role, error) {
+	var roles []model.Role
+	for rows.Next() {
+		role := model.Role{}
+		err := rows.Scan(&role.Id, &role.Role)
+		if err != nil {
+			return nil, fmt.Errorf("unable to convert row to role model: %w", err)
+		}
+		roles = append(roles, role)
+	}
+	return roles, nil
+}
+
+func GetAllRoles(pg *db.Postgres, ctx context.Context) ([]model.Role, error) {
+	query := `SELECT * FROM roles`
+	rows, err := pg.Db.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	roles, err := rows2Roles(rows)
+	if err != nil {
+		return nil, err
+	}
+	return roles, nil
+}
+
 func GetPersonRole(pg *db.Postgres, ctx context.Context, person int, section int) (pgtype.Int4, error) {
 	query := `SELECT role FROM persons_roles WHERE person = @person AND section = @section`
 	args := pgx.NamedArgs{
@@ -819,6 +847,32 @@ func GetManagersBySalary(pg *db.Postgres, ctx context.Context, salary int) ([]mo
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTrainersBySalary: %w", err)
+	}
+
+	defer rows.Close()
+
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
+}
+
+func GetManagersBySex(pg *db.Postgres, ctx context.Context, sex int) ([]model.Person, error) {
+	query := `select distinct id, name, surname, patronymic
+			  from persons
+			  join persons_roles 
+			  on persons.id = persons_roles.person
+			  join persons_attrs_int
+			  on persons.id = persons_attrs_int.person
+			  where role = 3 and persons_attrs_int.attr = 1 and persons_attrs_int.value = @sex`
+	args := pgx.NamedArgs{
+		"sex": sex,
+	}
+	rows, err := pg.Db.Query(ctx, query, args)
+	if err != nil {
+		return nil, fmt.Errorf("unable to do query GetTrainersBySex: %w", err)
 	}
 
 	defer rows.Close()

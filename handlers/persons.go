@@ -146,8 +146,9 @@ func FindManagers(w http.ResponseWriter, r *http.Request) {
 	beginYear := r.FormValue("begin_year")
 	age := r.FormValue("age")
 	salary := r.FormValue("salary")
+	sex := r.FormValue("sex")
 
-	data, err := services.GetManagersWithCondition(salary, birthYear, age, beginYear)
+	data, err := services.GetManagersWithCondition(salary, birthYear, age, beginYear, sex)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 		return
@@ -165,4 +166,13 @@ func FindTrainersByWorkouts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	utils.RespondWithJSON(w, http.StatusOK, data)
+}
+
+func GetAllRoles(w http.ResponseWriter, r *http.Request) {
+	roles, err := services.GetAllRoles()
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, roles)
 }
