@@ -278,7 +278,7 @@ func SetPersonStringAttribute(pg *db.Postgres, ctx context.Context, trio model.P
 	return nil
 }
 
-func GetPersonIntAttribute(pg *db.Postgres, ctx context.Context, person int, attr int) (int, error) {
+func GetPersonIntAttribute(pg *db.Postgres, ctx context.Context, person int, attr int) (*int, error) {
 	query := `SELECT * FROM persons_attrs_int WHERE person = @person AND attr = @attr`
 	args := pgx.NamedArgs{
 		"person": person,
@@ -287,20 +287,24 @@ func GetPersonIntAttribute(pg *db.Postgres, ctx context.Context, person int, att
 
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return 0, fmt.Errorf("unable to insert row in GetPersonIntAttribute: %w", err)
+		return nil, fmt.Errorf("unable to insert row in GetPersonIntAttribute: %w", err)
 	}
 
 	var result int
-	for rows.Next() {
-		err := rows.Scan(&result)
+
+	if rows.Next() {
+		err := rows.Scan(nil, nil, &result)
 		if err != nil {
-			return 0, err
+			return nil, err
 		}
+
+		return &result, nil
 	}
-	return result, nil
+
+	return nil, nil
 }
 
-func GetPersonFloatAttribute(pg *db.Postgres, ctx context.Context, person int, attr int) (float64, error) {
+func GetPersonFloatAttribute(pg *db.Postgres, ctx context.Context, person int, attr int) (*float64, error) {
 	query := `SELECT * FROM persons_attrs_real WHERE person = @person AND attr = @attr`
 	args := pgx.NamedArgs{
 		"person": person,
@@ -309,20 +313,22 @@ func GetPersonFloatAttribute(pg *db.Postgres, ctx context.Context, person int, a
 
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return 0, fmt.Errorf("unable to insert row in GetPersonFloatAttribute: %w", err)
+		return nil, fmt.Errorf("unable to insert row in GetPersonFloatAttribute: %w", err)
 	}
 
 	var result float64
-	for rows.Next() {
-		err := rows.Scan(&result)
+	if rows.Next() {
+		err := rows.Scan(nil, nil, &result)
 		if err != nil {
-			return 0, err
+			return nil, err
 		}
+		return &result, nil
 	}
-	return result, nil
+
+	return nil, nil
 }
 
-func GetPersonStringAttribute(pg *db.Postgres, ctx context.Context, person int, attr int) (string, error) {
+func GetPersonStringAttribute(pg *db.Postgres, ctx context.Context, person int, attr int) (*string, error) {
 	query := `SELECT * FROM persons_attrs_text WHERE person = @person AND attr = @attr`
 	args := pgx.NamedArgs{
 		"person": person,
@@ -331,20 +337,23 @@ func GetPersonStringAttribute(pg *db.Postgres, ctx context.Context, person int, 
 
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return "", fmt.Errorf("unable to insert row in GetPersonStringAttribute: %w", err)
+		return nil, fmt.Errorf("unable to insert row in GetPersonStringAttribute: %w", err)
 	}
 
 	var result string
-	for rows.Next() {
-		err := rows.Scan(&result)
+	if rows.Next() {
+		err := rows.Scan(nil, nil, &result)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
+
+		return &result, nil
 	}
-	return result, nil
+
+	return nil, nil
 }
 
-func GetPersonDateAttribute(pg *db.Postgres, ctx context.Context, person int, attr int) (pgtype.Date, error) {
+func GetPersonDateAttribute(pg *db.Postgres, ctx context.Context, person int, attr int) (*pgtype.Date, error) {
 	query := `SELECT * FROM persons_attrs_date WHERE person = @person AND attr = @attr`
 	args := pgx.NamedArgs{
 		"person": person,
@@ -353,17 +362,20 @@ func GetPersonDateAttribute(pg *db.Postgres, ctx context.Context, person int, at
 
 	rows, err := pg.Db.Query(ctx, query, args)
 	if err != nil {
-		return pgtype.Date{}, fmt.Errorf("unable to insert row in GetPersonDateAttribute: %w", err)
+		return nil, fmt.Errorf("unable to insert row in GetPersonDateAttribute: %w", err)
 	}
 
 	var result pgtype.Date
-	for rows.Next() {
-		err := rows.Scan(&result)
+	if rows.Next() {
+		err := rows.Scan(nil, nil, &result)
 		if err != nil {
-			return pgtype.Date{}, err
+			return nil, err
 		}
+
+		return &result, nil
 	}
-	return result, nil
+
+	return nil, nil
 }
 
 func UpdatePersonIntAttribute(pg *db.Postgres, ctx context.Context, trio model.PersonIntAttribute) error {

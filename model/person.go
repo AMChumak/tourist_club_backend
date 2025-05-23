@@ -17,26 +17,26 @@ type Attribute struct {
 }
 
 type PersonStringAttribute struct {
-	AttributeId int32
-	PersonId    int32
+	AttributeId int
+	PersonId    int
 	Value       string
 }
 
 type PersonIntAttribute struct {
-	AttributeId int32
-	PersonId    int32
-	Value       int32
+	AttributeId int
+	PersonId    int
+	Value       int
 }
 
 type PersonFloatAttribute struct {
-	AttributeId int32
-	PersonId    int32
+	AttributeId int
+	PersonId    int
 	Value       float64
 }
 
 type PersonDateAttribute struct {
-	AttributeId int32
-	PersonId    int32
+	AttributeId int
+	PersonId    int
 	Value       pgtype.Date
 }
 

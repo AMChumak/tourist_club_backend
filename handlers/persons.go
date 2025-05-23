@@ -176,3 +176,164 @@ func GetAllRoles(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.RespondWithJSON(w, http.StatusOK, roles)
 }
+
+func GetAllPersonAttributes(w http.ResponseWriter, r *http.Request) {
+	attributes, err := services.GetAllAttributes()
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, attributes)
+}
+
+func GetPersonIntAttribute(w http.ResponseWriter, r *http.Request) {
+	person := r.FormValue("person")
+	attribute := r.FormValue("attribute")
+
+	val, err := services.GetPersonIntAttribute(person, attribute)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, val)
+}
+
+func GetPersonFloatAttribute(w http.ResponseWriter, r *http.Request) {
+	person := r.FormValue("person")
+	attribute := r.FormValue("attribute")
+
+	val, err := services.GetPersonFloatAttribute(person, attribute)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, val)
+}
+
+func GetPersonStringAttribute(w http.ResponseWriter, r *http.Request) {
+	person := r.FormValue("person")
+	attribute := r.FormValue("attribute")
+
+	val, err := services.GetPersonStringAttribute(person, attribute)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, val)
+}
+
+func GetPersonDateAttribute(w http.ResponseWriter, r *http.Request) {
+	person := r.FormValue("person")
+	attribute := r.FormValue("attribute")
+
+	val, err := services.GetPersonDateAttribute(person, attribute)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, val)
+}
+
+func SetPersonIntAttribute(w http.ResponseWriter, r *http.Request) {
+	var attr dto.PersonIntAttribute
+	if err := json.NewDecoder(r.Body).Decode(&attr); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	err := services.SetPersonIntAttribute(attr)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
+}
+
+func SetPersonFloatAttribute(w http.ResponseWriter, r *http.Request) {
+	var attr dto.PersonFloatAttribute
+	if err := json.NewDecoder(r.Body).Decode(&attr); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	err := services.SetPersonFloatAttribute(attr)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
+}
+
+func SetPersonStringAttribute(w http.ResponseWriter, r *http.Request) {
+	var attr dto.PersonStringAttribute
+	if err := json.NewDecoder(r.Body).Decode(&attr); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	err := services.SetPersonStringAttribute(attr)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
+}
+
+func SetPersonDateAttribute(w http.ResponseWriter, r *http.Request) {
+	var attr dto.PersonDateAttribute
+	if err := json.NewDecoder(r.Body).Decode(&attr); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	err := services.SetPersonDateAttribute(attr)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
+}
+
+func DeletePersonIntAttribute(w http.ResponseWriter, r *http.Request) {
+	person := r.FormValue("person")
+	attribute := r.FormValue("attribute")
+
+	err := services.DeletePersonIntAttribute(person, attribute)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
+}
+
+func DeletePersonFloatAttribute(w http.ResponseWriter, r *http.Request) {
+	person := r.FormValue("person")
+	attribute := r.FormValue("attribute")
+
+	err := services.DeletePersonFloatAttribute(person, attribute)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
+}
+
+func DeletePersonStringAttribute(w http.ResponseWriter, r *http.Request) {
+	person := r.FormValue("person")
+	attribute := r.FormValue("attribute")
+
+	err := services.DeletePersonStringAttribute(person, attribute)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
+}
+
+func DeletePersonDateAttribute(w http.ResponseWriter, r *http.Request) {
+	person := r.FormValue("person")
+	attribute := r.FormValue("attribute")
+
+	err := services.DeletePersonDateAttribute(person, attribute)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"status": "success"})
+}

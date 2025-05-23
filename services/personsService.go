@@ -450,3 +450,335 @@ func GetAllRoles() ([]dto.Role, error) {
 	}
 	return roles, nil
 }
+
+func GetAllAttributes() ([]dto.PersonAttribute, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	attributesModel, err := dbqueries.GetAllAttributes(pg, context.Background())
+	if err != nil {
+		return nil, err
+	}
+	var attributes []dto.PersonAttribute
+	for _, attr := range attributesModel {
+		var jsonAttr dto.PersonAttribute
+		jsonAttr.Id = attr.Id
+		jsonAttr.Name = attr.Name
+		jsonAttr.Type = attr.Type
+		if attr.Role.Valid {
+			jsonAttr.Role = int32(attr.Role.Int32)
+		} else {
+			jsonAttr.Role = -1
+		}
+		attributes = append(attributes, jsonAttr)
+	}
+	return attributes, nil
+}
+
+func GetPersonIntAttribute(person string, attribute string) (*int, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return nil, err
+	}
+	attributeInt, err := strconv.Atoi(attribute)
+	if err != nil {
+		return nil, err
+	}
+
+	val, err := dbqueries.GetPersonIntAttribute(pg, context.Background(), personInt, attributeInt)
+	if err != nil {
+		return nil, err
+	}
+	return val, nil
+}
+
+func GetPersonFloatAttribute(person string, attribute string) (*float64, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return nil, err
+	}
+	attributeInt, err := strconv.Atoi(attribute)
+	if err != nil {
+		return nil, err
+	}
+
+	val, err := dbqueries.GetPersonFloatAttribute(pg, context.Background(), personInt, attributeInt)
+	if err != nil {
+		return nil, err
+	}
+	return val, nil
+}
+
+func GetPersonStringAttribute(person string, attribute string) (*string, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return nil, err
+	}
+	attributeInt, err := strconv.Atoi(attribute)
+	if err != nil {
+		return nil, err
+	}
+
+	val, err := dbqueries.GetPersonStringAttribute(pg, context.Background(), personInt, attributeInt)
+	if err != nil {
+		return nil, err
+	}
+	return val, nil
+}
+
+func GetPersonDateAttribute(person string, attribute string) (*string, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return nil, err
+	}
+	attributeInt, err := strconv.Atoi(attribute)
+	if err != nil {
+		return nil, err
+	}
+
+	val, err := dbqueries.GetPersonDateAttribute(pg, context.Background(), personInt, attributeInt)
+	if err != nil {
+		return nil, err
+	}
+	if val == nil {
+		return nil, nil
+	}
+
+	t := val.Time
+	stringVal := t.Format("2006-01-02")
+
+	return &stringVal, nil
+}
+
+func SetPersonIntAttribute(attr dto.PersonIntAttribute) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	var attrModel model.PersonIntAttribute
+	attrModel.PersonId = attr.Person
+	attrModel.AttributeId = attr.Attribute
+	attrModel.Value = attr.Value
+
+	val, err := dbqueries.GetPersonIntAttribute(pg, context.Background(), attr.Person, attr.Attribute)
+	if err != nil {
+		return err
+	}
+
+	if val == nil {
+		err = dbqueries.SetPersonIntAttribute(pg, context.Background(), attrModel)
+
+	} else {
+		err = dbqueries.UpdatePersonIntAttribute(pg, context.Background(), attrModel)
+	}
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func SetPersonFloatAttribute(attr dto.PersonFloatAttribute) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	var attrModel model.PersonFloatAttribute
+	attrModel.PersonId = attr.Person
+	attrModel.AttributeId = attr.Attribute
+	attrModel.Value = attr.Value
+
+	val, err := dbqueries.GetPersonFloatAttribute(pg, context.Background(), attr.Person, attr.Attribute)
+	if err != nil {
+		return err
+	}
+
+	if val == nil {
+		err = dbqueries.SetPersonFloatAttribute(pg, context.Background(), attrModel)
+
+	} else {
+		err = dbqueries.UpdatePersonFloatAttribute(pg, context.Background(), attrModel)
+	}
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func SetPersonStringAttribute(attr dto.PersonStringAttribute) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	var attrModel model.PersonStringAttribute
+	attrModel.PersonId = attr.Person
+	attrModel.AttributeId = attr.Attribute
+	attrModel.Value = attr.Value
+
+	val, err := dbqueries.GetPersonStringAttribute(pg, context.Background(), attr.Person, attr.Attribute)
+	if err != nil {
+		return err
+	}
+
+	if val == nil {
+		err = dbqueries.SetPersonStringAttribute(pg, context.Background(), attrModel)
+
+	} else {
+		err = dbqueries.UpdatePersonStringAttribute(pg, context.Background(), attrModel)
+	}
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func SetPersonDateAttribute(attr dto.PersonDateAttribute) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	var attrModel model.PersonDateAttribute
+	attrModel.PersonId = attr.Person
+	attrModel.AttributeId = attr.Attribute
+	err = attrModel.Value.Scan(attr.Value)
+	if err != nil {
+		return err
+	}
+
+	val, err := dbqueries.GetPersonDateAttribute(pg, context.Background(), attr.Person, attr.Attribute)
+	if err != nil {
+		return err
+	}
+
+	if val == nil {
+		err = dbqueries.SetPersonDateAttribute(pg, context.Background(), attrModel)
+
+	} else {
+		err = dbqueries.UpdatePersonDateAttribute(pg, context.Background(), attrModel)
+	}
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeletePersonIntAttribute(person string, attr string) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return err
+	}
+
+	attrInt, err := strconv.Atoi(attr)
+	if err != nil {
+		return err
+	}
+
+	err = dbqueries.DeletePersonIntAttribute(pg, context.Background(), personInt, attrInt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeletePersonFloatAttribute(person string, attr string) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return err
+	}
+
+	attrInt, err := strconv.Atoi(attr)
+	if err != nil {
+		return err
+	}
+
+	err = dbqueries.DeletePersonFloatAttribute(pg, context.Background(), personInt, attrInt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeletePersonStringAttribute(person string, attr string) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return err
+	}
+
+	attrInt, err := strconv.Atoi(attr)
+	if err != nil {
+		return err
+	}
+
+	err = dbqueries.DeletePersonStringAttribute(pg, context.Background(), personInt, attrInt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeletePersonDateAttribute(person string, attr string) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+
+	personInt, err := strconv.Atoi(person)
+	if err != nil {
+		return err
+	}
+
+	attrInt, err := strconv.Atoi(attr)
+	if err != nil {
+		return err
+	}
+
+	err = dbqueries.DeletePersonDateAttribute(pg, context.Background(), personInt, attrInt)
+	if err != nil {
+		return err
+	}
+	return nil
+}

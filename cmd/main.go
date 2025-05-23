@@ -63,10 +63,27 @@ func main() {
 
 	r.HandleFunc("/roles/list", handlers.GetAllRoles).Methods("GET")
 
-	r.HandleFunc("/persons/attribute", handlers.CreatePersonAttribute).Methods("POST")
-	r.HandleFunc("/persons/attribute", handlers.GetPersonAttribute).Methods("GET")
-	r.HandleFunc("/persons/attribute", handlers.SetPersonAttribute).Methods("PATCH")
-	r.HandleFunc("/persons/attribute", handlers.DeletePersonAttribute).Methods("DELETE")
+	r.HandleFunc("/persons/attribute/int", handlers.GetPersonIntAttribute).Methods("GET")
+	r.HandleFunc("/persons/attribute/int", handlers.SetPersonIntAttribute).Methods("POST")
+	r.HandleFunc("/persons/attribute/int", handlers.DeletePersonIntAttribute).Methods("DELETE")
+
+	r.HandleFunc("/persons/attribute/float", handlers.GetPersonFloatAttribute).Methods("GET")
+	r.HandleFunc("/persons/attribute/float", handlers.SetPersonFloatAttribute).Methods("POST")
+	r.HandleFunc("/persons/attribute/float", handlers.DeletePersonFloatAttribute).Methods("DELETE")
+
+	r.HandleFunc("/persons/attribute/string", handlers.GetPersonStringAttribute).Methods("GET")
+	r.HandleFunc("/persons/attribute/string", handlers.SetPersonStringAttribute).Methods("POST")
+	r.HandleFunc("/persons/attribute/string", handlers.DeletePersonStringAttribute).Methods("DELETE")
+
+	r.HandleFunc("/persons/attribute/date", handlers.GetPersonDateAttribute).Methods("GET")
+	r.HandleFunc("/persons/attribute/date", handlers.SetPersonDateAttribute).Methods("POST")
+	r.HandleFunc("/persons/attribute/date", handlers.DeletePersonDateAttribute).Methods("DELETE")
+
+	r.HandleFunc("/person-attributes/attribute", handlers.CreatePersonAttribute).Methods("POST")
+	r.HandleFunc("/person-attributes/attribute", handlers.GetPersonAttribute).Methods("GET")
+	r.HandleFunc("/person-attributes/attribute", handlers.SetPersonAttribute).Methods("PATCH")
+	r.HandleFunc("/person-attributes/attribute", handlers.DeletePersonAttribute).Methods("DELETE")
+	r.HandleFunc("/person-attributes/list", handlers.GetAllPersonAttributes).Methods("GET")
 
 	r.HandleFunc("/groups/group", handlers.CreateGroup).Methods("POST")
 	r.HandleFunc("/groups/group", handlers.GetGroup).Methods("GET")
