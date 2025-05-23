@@ -183,6 +183,73 @@ func GetAllGroups() ([]dto.Group, error) {
 	return result, nil
 }
 
+func CreateSection(section dto.Section) (int, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return -1, err
+	}
+
+	var sectionModel model.Section
+	sectionModel.Title = section.Title
+
+	sectionId, err := dbqueries.CreateSection(pg, context.Background(), sectionModel)
+	if err != nil {
+		return -1, err
+	}
+	return sectionId, nil
+}
+
+func GetSection(id string) (*model.Section, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+
+	sectionModel, err := dbqueries.GetSection(pg, context.Background(), idInt)
+	if err != nil {
+		return nil, err
+	}
+
+	return sectionModel, nil
+}
+
+func UpdateSection(section dto.Section) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+	var sectionModel model.Section
+	sectionModel.Id = section.Id
+	sectionModel.Title = section.Title
+
+	err = dbqueries.UpdateSection(pg, context.Background(), sectionModel)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteSection(id string) error {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return err
+	}
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+	err = dbqueries.DeleteSection(pg, context.Background(), idInt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetAllSections() ([]dto.Section, error) {
 	pg, err := db.NewPG(context.Background())
 	if err != nil {
@@ -203,4 +270,30 @@ func GetAllSections() ([]dto.Section, error) {
 	}
 
 	return result, nil
+}
+
+func GetGroupFromSection(id string) ([]dto.Group, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+
+	groupsModel, err := dbqueries.GetGroupsFromSections(pg, context.Background(), idInt)
+	if err != nil {
+		return nil, err
+	}
+	var groups []dto.Group
+	for _, group := range groupsModel {
+		var groupResponse dto.Group
+		groupResponse.Id = group.Id
+		groupResponse.GroupNumber = group.GroupNumber
+		groupResponse.Section = group.Section
+		groups = append(groups, groupResponse)
+	}
+	return groups, nil
 }

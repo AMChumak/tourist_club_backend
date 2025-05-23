@@ -185,6 +185,7 @@ func CreateSection(pg *db.Postgres, ctx context.Context, section model.Section) 
 	query = `select last_value from sections_id_seq`
 	rows, err := pg.Db.Query(ctx, query)
 	var lastValue int
+	rows.Next()
 	err = rows.Scan(&lastValue)
 	if err != nil {
 		return 0, err
@@ -203,12 +204,16 @@ func GetSection(pg *db.Postgres, ctx context.Context, id int) (*model.Section, e
 		return nil, fmt.Errorf("unable to retrieve section: %w", err)
 	}
 	defer rows.Close()
+
 	var section model.Section
-	err = rows.Scan(&section.Id)
-	if err != nil {
-		return nil, err
+	if rows.Next() {
+		err = rows.Scan(&section.Id, &section.Title)
+		if err != nil {
+			return nil, err
+		}
+		return &section, nil
 	}
-	return &section, nil
+	return nil, nil
 }
 
 func UpdateSection(pg *db.Postgres, ctx context.Context, section model.Section) error {

@@ -79,7 +79,12 @@ func main() {
 
 	r.HandleFunc("/groups/list", handlers.GetAllGroups).Methods("GET")
 
+	r.HandleFunc("/sections/section", handlers.GetSection).Methods("GET")
+	r.HandleFunc("/sections/section", handlers.CreateSection).Methods("POST")
+	r.HandleFunc("/sections/section", handlers.UpdateSection).Methods("PATCH")
+	r.HandleFunc("/sections/section", handlers.DeleteSection).Methods("DELETE")
 	r.HandleFunc("/sections/list", handlers.GetAllSections).Methods("GET")
+	r.HandleFunc("/sections/groups", handlers.GetGroupsFromSections).Methods("GET")
 
 	//listen
 	addr := fmt.Sprintf(":%s", listenPort)
