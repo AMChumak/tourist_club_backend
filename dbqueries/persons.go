@@ -51,6 +51,19 @@ func rows2Persons(rows pgx.Rows) ([]model.Person, error) {
 	return persons, nil
 }
 
+func rows2RouteType(rows pgx.Rows) ([]model.RouteType, error) {
+	var rtypes []model.RouteType
+	for rows.Next() {
+		rtype := model.RouteType{}
+		err := rows.Scan(&rtype.Id, &rtype.Type)
+		if err != nil {
+			return nil, fmt.Errorf("unable to convert row to rtype model: %w", err)
+		}
+		rtypes = append(rtypes, rtype)
+	}
+	return rtypes, nil
+}
+
 func rows2Attributes(rows pgx.Rows) ([]model.Attribute, error) {
 	var attrs []model.Attribute
 	for rows.Next() {

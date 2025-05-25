@@ -118,3 +118,14 @@ func FindTouristsCompletedRoutes(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.RespondWithJSON(w, http.StatusOK, data)
 }
+
+func GetAllRouteTypes(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	data, err := services.GetAllRouteTypes()
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, data)
+}

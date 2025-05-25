@@ -103,6 +103,8 @@ func main() {
 	r.HandleFunc("/sections/list", handlers.GetAllSections).Methods("GET")
 	r.HandleFunc("/sections/groups", handlers.GetGroupsFromSections).Methods("GET")
 
+	r.HandleFunc("/routes/types", handlers.GetAllRouteTypes).Methods("GET")
+
 	//listen
 	addr := fmt.Sprintf(":%s", listenPort)
 	if err := http.ListenAndServe(addr, h); err != nil {

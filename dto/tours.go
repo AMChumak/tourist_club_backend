@@ -9,3 +9,8 @@ type RouteIdsListResponse struct {
 type CompletedRoutesRequest struct {
 	Routes []int32 `json:"routes"`
 }
+
+type RouteType struct {
+	Id   int    `json:"id"`
+	Type string `json:"type"`
+}

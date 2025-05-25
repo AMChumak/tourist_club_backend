@@ -53,7 +53,7 @@ func GetTouristsByToursCount(pg *db.Postgres, ctx context.Context, cntTours int)
 }
 
 func GetTouristsByTour(pg *db.Postgres, ctx context.Context, tour int) ([]model.Person, error) {
-	query := `select distinct persons.id, name, surname, patronymic, group_number
+	query := `select distinct persons.id, name, surname, patronymic
 			  from persons
 			  join persons_tours on persons.id = persons_tours.person
 			  where tour = @tour`
@@ -191,7 +191,7 @@ func GetRoutesBySection(pg *db.Postgres, ctx context.Context, section int) ([]mo
 			  join tours
 			  on persons_tours.tour = tours.id
 			  join persons_roles on persons.id = persons_roles.person
-			  where (role = 0 or role = 1) and section = 3`
+			  where (role = 0 or role = 1) and section = @section`
 	args := pgx.NamedArgs{
 		"section": section,
 	}
@@ -319,7 +319,7 @@ func GetRoutesByPlace(pg *db.Postgres, ctx context.Context, placeId int) ([]mode
 func GetRoutesByLength(pg *db.Postgres, ctx context.Context, length int) ([]model.RouteId, error) {
 	query := `select count( id) 
 			  from routes
-			  where length_km > @length`
+			  where length_km >= @length`
 
 	args := pgx.NamedArgs{
 		"length": length,
@@ -341,7 +341,7 @@ func GetRoutesByLength(pg *db.Postgres, ctx context.Context, length int) ([]mode
 func GetRoutesByDifficulty(pg *db.Postgres, ctx context.Context, difficulty int) ([]model.RouteId, error) {
 	query := `select count( id) 
 			  from routes
-			  where difficulty > @difficulty`
+			  where difficulty >= @difficulty`
 
 	args := pgx.NamedArgs{
 		"difficulty": difficulty,
@@ -617,4 +617,19 @@ func GetTouristsCompletedRoute(pg *db.Postgres, ctx context.Context, routeId int
 	}
 
 	return persons, nil
+}
+
+func GetAllRouteTypes(pg *db.Postgres, ctx context.Context) ([]model.RouteType, error) {
+	query := `select id, type from route_types`
+
+	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
+	if err != nil {
+		return nil, fmt.Errorf("unable to do query GetAllRouteTypes: %w", err)
+	}
+	types, err := rows2RouteType(rows)
+	if err != nil {
+		return nil, err
+	}
+	return types, nil
 }

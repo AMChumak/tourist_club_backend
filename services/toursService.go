@@ -332,3 +332,24 @@ func GetTouristsCompletedRoutes(section string, group string, request dto.Comple
 
 	return &response, nil
 }
+
+func GetAllRouteTypes() ([]dto.RouteType, error) {
+	pg, err := db.NewPG(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	typesM, err := dbqueries.GetAllRouteTypes(pg, context.Background())
+	if err != nil {
+		return nil, err
+	}
+	var response []dto.RouteType
+
+	for _, types := range typesM {
+		var jsonTypes dto.RouteType
+		jsonTypes.Id = types.Id
+		jsonTypes.Type = types.Type
+		response = append(response, jsonTypes)
+	}
+	return response, nil
+}
