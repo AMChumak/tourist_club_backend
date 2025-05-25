@@ -9,6 +9,7 @@ import (
 )
 
 func FindTouristsByTour(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	section := r.FormValue("section")
 	group := r.FormValue("group")
 	cntTours := r.FormValue("cnt_tours")
@@ -26,6 +27,7 @@ func FindTouristsByTour(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindRoutes(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	section := r.FormValue("section")
 	dateFrom := r.FormValue("date_from")
 	dateTo := r.FormValue("date_to")
@@ -41,6 +43,7 @@ func FindRoutes(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindRoutesWithGeo(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	place := r.FormValue("place")
 	length := r.FormValue("length")
 	difficulty := r.FormValue("difficulty")
@@ -54,6 +57,7 @@ func FindRoutesWithGeo(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindInstructors(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	role := r.FormValue("role")
 	routeType := r.FormValue("type")
 	routeDifficulty := r.FormValue("difficulty")
@@ -70,6 +74,7 @@ func FindInstructors(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindTouristsWithTrainerInstructor(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	section := r.FormValue("section")
 	group := r.FormValue("group")
 
@@ -82,6 +87,7 @@ func FindTouristsWithTrainerInstructor(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindTouristsCompletedAll(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	section := r.FormValue("section")
 	group := r.FormValue("group")
 
@@ -94,6 +100,7 @@ func FindTouristsCompletedAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindTouristsCompletedRoutes(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	section := r.FormValue("section")
 	group := r.FormValue("group")
 

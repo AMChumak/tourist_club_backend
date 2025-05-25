@@ -98,9 +98,8 @@ func GetPersonRole(pg *db.Postgres, ctx context.Context, person int, section int
 		"person":  person,
 		"section": section,
 	}
-	row := pg.Db.QueryRow(ctx, query, args)
 	var role pgtype.Int4
-	err := row.Scan(&role)
+	err := pg.Db.QueryRow(ctx, query, args).Scan(&role)
 	if err != nil {
 		return pgtype.Int4{}, err
 	}
@@ -144,11 +143,10 @@ func UpdatePersonRole(pg *db.Postgres, ctx context.Context, person int, section 
 func GetAllAttributes(pg *db.Postgres, ctx context.Context) ([]model.Attribute, error) {
 	query := `SELECT * FROM attributes`
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve all attributes in GetAllAttributes: %w", err)
 	}
-
-	defer rows.Close()
 
 	attrs, err := rows2Attributes(rows)
 	if err != nil {
@@ -163,11 +161,10 @@ func GetAttribute(pg *db.Postgres, ctx context.Context, id int) (*model.Attribut
 		"id": id,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve attribute in GetAttribute: %w", err)
 	}
-
-	defer rows.Close()
 
 	attrs, err := rows2Attributes(rows)
 	if attrs == nil {
@@ -286,6 +283,7 @@ func GetPersonIntAttribute(pg *db.Postgres, ctx context.Context, person int, att
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to insert row in GetPersonIntAttribute: %w", err)
 	}
@@ -312,6 +310,7 @@ func GetPersonFloatAttribute(pg *db.Postgres, ctx context.Context, person int, a
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to insert row in GetPersonFloatAttribute: %w", err)
 	}
@@ -336,6 +335,7 @@ func GetPersonStringAttribute(pg *db.Postgres, ctx context.Context, person int, 
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to insert row in GetPersonStringAttribute: %w", err)
 	}
@@ -361,6 +361,7 @@ func GetPersonDateAttribute(pg *db.Postgres, ctx context.Context, person int, at
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to insert row in GetPersonDateAttribute: %w", err)
 	}
@@ -502,11 +503,10 @@ func GetAllTourists(pg *db.Postgres, ctx context.Context) ([]model.Person, error
 			  where role = 0 or role = 1`
 
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetAllTourists: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -526,11 +526,10 @@ func GetTouristsBySection(pg *db.Postgres, ctx context.Context, section int) ([]
 		"section": section,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsBySection: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -550,11 +549,10 @@ func GetTouristsByGroup(pg *db.Postgres, ctx context.Context, groupId int) ([]mo
 		"group_id": groupId,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByGroup: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -576,11 +574,10 @@ func GetTouristsBySex(pg *db.Postgres, ctx context.Context, sex int) ([]model.Pe
 		"sex": sex,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsBySex: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -602,11 +599,10 @@ func GetTouristsByBirthYear(pg *db.Postgres, ctx context.Context, year int) ([]m
 		"year": year,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByBirthYEar: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -628,11 +624,10 @@ func GetTouristsByAge(pg *db.Postgres, ctx context.Context, age int) ([]model.Pe
 		"age": age,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByAge: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -650,11 +645,10 @@ func GetAllTrainers(pg *db.Postgres, ctx context.Context) ([]model.Person, error
 			  where role = 2`
 
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetAllTrainers: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -674,11 +668,10 @@ func GetTrainersBySection(pg *db.Postgres, ctx context.Context, section int) ([]
 		"section": section,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTrainersBySection: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -700,11 +693,10 @@ func GetTrainersBySex(pg *db.Postgres, ctx context.Context, sex int) ([]model.Pe
 		"sex": sex,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTrainersBySex: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -726,11 +718,10 @@ func GetTrainersByAge(pg *db.Postgres, ctx context.Context, age int) ([]model.Pe
 		"age": age,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTrainersByAge: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -752,11 +743,10 @@ func GetTrainersBySalary(pg *db.Postgres, ctx context.Context, salary int) ([]mo
 		"salary": salary,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTrainersBySalary: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -778,11 +768,10 @@ func GetTrainersBySpecialization(pg *db.Postgres, ctx context.Context, specializ
 		"specialization": specialization,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTrainersBySpecialization: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -809,11 +798,10 @@ func GetTrainersByWorkout(pg *db.Postgres, ctx context.Context, groupNum int, fr
 		"to":       toDate,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTrainersByWorkout: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -831,11 +819,10 @@ func GetAllManagers(pg *db.Postgres, ctx context.Context) ([]model.Person, error
 			  where role = 3`
 
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetAllTrainers: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -857,11 +844,10 @@ func GetManagersBySalary(pg *db.Postgres, ctx context.Context, salary int) ([]mo
 		"salary": salary,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTrainersBySalary: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -883,11 +869,10 @@ func GetManagersBySex(pg *db.Postgres, ctx context.Context, sex int) ([]model.Pe
 		"sex": sex,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTrainersBySex: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -909,11 +894,10 @@ func GetManagersByBirthYear(pg *db.Postgres, ctx context.Context, year int) ([]m
 		"year": year,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByBirthYEar: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -935,11 +919,10 @@ func GetManagersByAge(pg *db.Postgres, ctx context.Context, age int) ([]model.Pe
 		"age": age,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByAge: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -961,11 +944,10 @@ func GetManagersByBeginYear(pg *db.Postgres, ctx context.Context, year int) ([]m
 		"year": year,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByAge: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {

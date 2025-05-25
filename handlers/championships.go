@@ -7,6 +7,7 @@ import (
 )
 
 func FindChampionships(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	section := r.FormValue("section")
 
 	data, err := services.GetChampionshipsWithCondition(section)

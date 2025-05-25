@@ -39,11 +39,10 @@ func GetTouristsByToursCount(pg *db.Postgres, ctx context.Context, cntTours int)
 		"cntTours": cntTours,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByToursCount: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -62,11 +61,10 @@ func GetTouristsByTour(pg *db.Postgres, ctx context.Context, tour int) ([]model.
 		"tour": tour,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByTour: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -93,11 +91,10 @@ func GetTouristsByTourTime(pg *db.Postgres, ctx context.Context, date string) ([
 		"date": date,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByTourTime: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -124,11 +121,10 @@ func GetTouristsByTourRoute(pg *db.Postgres, ctx context.Context, route int) ([]
 		"route": route,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByTourRoute: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -157,11 +153,10 @@ func GetTouristsByTourPlace(pg *db.Postgres, ctx context.Context, placeId int) (
 		"place": placeId,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByTourPlace: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -175,11 +170,10 @@ func GetAllRouteIds(pg *db.Postgres, ctx context.Context) ([]model.RouteId, erro
 	query := `select distinct id
 			  from routes`
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetToursBySection: %w", err)
 	}
-
-	defer rows.Close()
 
 	tours, err := rows2RouteIds(rows)
 	if err != nil {
@@ -202,11 +196,10 @@ func GetRoutesBySection(pg *db.Postgres, ctx context.Context, section int) ([]mo
 		"section": section,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetToursBySection: %w", err)
 	}
-
-	defer rows.Close()
 
 	tours, err := rows2RouteIds(rows)
 	if err != nil {
@@ -229,11 +222,10 @@ func GetRoutesByTime(pg *db.Postgres, ctx context.Context, fromDate string, toDa
 		"toDate":   toDate,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetToursByTime: %w", err)
 	}
-
-	defer rows.Close()
 
 	tours, err := rows2RouteIds(rows)
 	if err != nil {
@@ -256,11 +248,10 @@ func GetRoutesByInstructor(pg *db.Postgres, ctx context.Context, instructor int)
 		"instructor": instructor,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetToursByInstructor: %w", err)
 	}
-
-	defer rows.Close()
 
 	tours, err := rows2RouteIds(rows)
 	if err != nil {
@@ -288,11 +279,10 @@ func GetRoutesByCntGroups(pg *db.Postgres, ctx context.Context, cntGroups int) (
 		"cntGroups": cntGroups,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetToursByCntGroups: %w", err)
 	}
-
-	defer rows.Close()
 
 	tours, err := rows2RouteIds(rows)
 	if err != nil {
@@ -313,11 +303,10 @@ func GetRoutesByPlace(pg *db.Postgres, ctx context.Context, placeId int) ([]mode
 		"place": placeId,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetRoutesByCntPlace: %w", err)
 	}
-
-	defer rows.Close()
 
 	tours, err := rows2RouteIds(rows)
 	if err != nil {
@@ -336,11 +325,10 @@ func GetRoutesByLength(pg *db.Postgres, ctx context.Context, length int) ([]mode
 		"length": length,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetRoutesByLength: %w", err)
 	}
-
-	defer rows.Close()
 
 	tours, err := rows2RouteIds(rows)
 	if err != nil {
@@ -359,11 +347,10 @@ func GetRoutesByDifficulty(pg *db.Postgres, ctx context.Context, difficulty int)
 		"difficulty": difficulty,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetRoutesByDifficulty: %w", err)
 	}
-
-	defer rows.Close()
 
 	tours, err := rows2RouteIds(rows)
 	if err != nil {
@@ -380,11 +367,10 @@ func GetAllInstructors(pg *db.Postgres, ctx context.Context) ([]model.Person, er
 			  on tours.instructor = persons.id`
 
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetAllInstructors: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -408,11 +394,10 @@ func GetInstructorsByRole(pg *db.Postgres, ctx context.Context, role int) ([]mod
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetInstructorsByRole: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -443,11 +428,10 @@ func GetInstructorsByCategory(pg *db.Postgres, ctx context.Context, routeType in
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetInstructorsByCategory: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -474,11 +458,10 @@ func GetInstructorsByCntTours(pg *db.Postgres, ctx context.Context, cntTours int
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetInstructorsByCntTours: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -502,11 +485,10 @@ func GetInstructorsByTour(pg *db.Postgres, ctx context.Context, tourId int) ([]m
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetInstructorsByTour: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -532,11 +514,10 @@ func GetInstructorsByPlace(pg *db.Postgres, ctx context.Context, placeId int) ([
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetInstructorsByPlaceId: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -564,11 +545,10 @@ func GetTouristsWithTrainerInstructor(pg *db.Postgres, ctx context.Context) ([]m
 			  where workout_descriptions.trainer = tours.instructor`
 
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByToursCount: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -597,11 +577,10 @@ func GetTouristsCompletedAll(pg *db.Postgres, ctx context.Context) ([]model.Pers
 			  where cnttbl.cnt = (select count(*) from routes)`
 
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByToursCount: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {
@@ -627,11 +606,10 @@ func GetTouristsCompletedRoute(pg *db.Postgres, ctx context.Context, routeId int
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetTouristsByToursCount: %w", err)
 	}
-
-	defer rows.Close()
 
 	persons, err := rows2Persons(rows)
 	if err != nil {

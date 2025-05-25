@@ -7,6 +7,7 @@ import (
 )
 
 func GetStrain(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	trainer := r.FormValue("trainer")
 	fromDate := r.FormValue("from_date")
 	toDate := r.FormValue("to_date")

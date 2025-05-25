@@ -10,6 +10,7 @@ import (
 )
 
 func CreatePerson(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	var req dto.PersonCreateRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Println("Error decoding person create request:", err)
@@ -26,6 +27,7 @@ func CreatePerson(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPersonRole(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	section := r.FormValue("section")
 
@@ -39,6 +41,7 @@ func GetPersonRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetPersonRole(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	section := r.FormValue("section")
 	role := r.FormValue("role")
@@ -51,6 +54,7 @@ func SetPersonRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePersonRole(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	section := r.FormValue("section")
 
@@ -63,6 +67,7 @@ func DeletePersonRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreatePersonAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	var req dto.PersonAttribute
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Println("Error decoding person create request:", err)
@@ -77,6 +82,7 @@ func CreatePersonAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPersonAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	id := r.FormValue("id")
 
 	attr, err := services.GetPersonAttribute(id)
@@ -88,6 +94,7 @@ func GetPersonAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetPersonAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	var req dto.PersonAttribute
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Println("Error decoding person create request:", err)
@@ -102,6 +109,7 @@ func SetPersonAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePersonAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	attr := r.FormValue("id")
 	err := services.DeletePersonAttribute(attr)
 	if err != nil {
@@ -112,12 +120,12 @@ func DeletePersonAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindTourists(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	section := r.FormValue("section")
 	group := r.FormValue("group")
 	sex := r.FormValue("sex")
 	birthYear := r.FormValue("birth_year")
 	age := r.FormValue("age")
-
 	data, err := services.GetTouristsWithCondition(section, group, sex, birthYear, age)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
@@ -127,6 +135,7 @@ func FindTourists(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindTrainers(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	section := r.FormValue("section")
 	sex := r.FormValue("sex")
 	age := r.FormValue("age")
@@ -142,6 +151,7 @@ func FindTrainers(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindManagers(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	birthYear := r.FormValue("birth_year")
 	beginYear := r.FormValue("begin_year")
 	age := r.FormValue("age")
@@ -157,6 +167,7 @@ func FindManagers(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindTrainersByWorkouts(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	group := r.FormValue("group")
 	from := r.FormValue("from_date")
 	to := r.FormValue("to_date")
@@ -169,6 +180,7 @@ func FindTrainersByWorkouts(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllRoles(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	roles, err := services.GetAllRoles()
 	if err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
@@ -178,6 +190,7 @@ func GetAllRoles(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllPersonAttributes(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	attributes, err := services.GetAllAttributes()
 	if err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
@@ -187,6 +200,7 @@ func GetAllPersonAttributes(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPersonIntAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	attribute := r.FormValue("attribute")
 
@@ -199,6 +213,7 @@ func GetPersonIntAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPersonFloatAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	attribute := r.FormValue("attribute")
 
@@ -211,6 +226,7 @@ func GetPersonFloatAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPersonStringAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	attribute := r.FormValue("attribute")
 
@@ -223,6 +239,7 @@ func GetPersonStringAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPersonDateAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	attribute := r.FormValue("attribute")
 
@@ -235,6 +252,7 @@ func GetPersonDateAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetPersonIntAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	var attr dto.PersonIntAttribute
 	if err := json.NewDecoder(r.Body).Decode(&attr); err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
@@ -249,6 +267,7 @@ func SetPersonIntAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetPersonFloatAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	var attr dto.PersonFloatAttribute
 	if err := json.NewDecoder(r.Body).Decode(&attr); err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
@@ -263,6 +282,7 @@ func SetPersonFloatAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetPersonStringAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	var attr dto.PersonStringAttribute
 	if err := json.NewDecoder(r.Body).Decode(&attr); err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
@@ -277,6 +297,7 @@ func SetPersonStringAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetPersonDateAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	var attr dto.PersonDateAttribute
 	if err := json.NewDecoder(r.Body).Decode(&attr); err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
@@ -291,6 +312,7 @@ func SetPersonDateAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePersonIntAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	attribute := r.FormValue("attribute")
 
@@ -303,6 +325,7 @@ func DeletePersonIntAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePersonFloatAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	attribute := r.FormValue("attribute")
 
@@ -315,6 +338,7 @@ func DeletePersonFloatAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePersonStringAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	attribute := r.FormValue("attribute")
 
@@ -327,6 +351,7 @@ func DeletePersonStringAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePersonDateAttribute(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	person := r.FormValue("person")
 	attribute := r.FormValue("attribute")
 

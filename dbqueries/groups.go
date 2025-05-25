@@ -46,6 +46,7 @@ func CreateGroup(pg *db.Postgres, ctx context.Context, group model.Group) (int, 
 	}
 	query = `select last_value from groups_id_seq`
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	var lastValue int
 	rows.Next()
 	err = rows.Scan(&lastValue)
@@ -61,11 +62,10 @@ func GetGroup(pg *db.Postgres, ctx context.Context, id int) (*model.Group, error
 		"id": id,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve attribute in GetGroup: %w", err)
 	}
-
-	defer rows.Close()
 
 	var groups []model.Group
 
@@ -139,10 +139,10 @@ func GetGroupMembers(pg *db.Postgres, ctx context.Context, group int) ([]int, er
 		"group": group,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve group members: %w", err)
 	}
-	defer rows.Close()
 
 	var members []int
 	for rows.Next() {
@@ -159,10 +159,10 @@ func GetGroupMembers(pg *db.Postgres, ctx context.Context, group int) ([]int, er
 func GetGroups(pg *db.Postgres, ctx context.Context) ([]model.Group, error) {
 	query := `SELECT * from groups`
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve groups: %w", err)
 	}
-	defer rows.Close()
 
 	var groups []model.Group
 
@@ -184,6 +184,7 @@ func CreateSection(pg *db.Postgres, ctx context.Context, section model.Section) 
 	}
 	query = `select last_value from sections_id_seq`
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	var lastValue int
 	rows.Next()
 	err = rows.Scan(&lastValue)
@@ -200,10 +201,10 @@ func GetSection(pg *db.Postgres, ctx context.Context, id int) (*model.Section, e
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve section: %w", err)
 	}
-	defer rows.Close()
 
 	var section model.Section
 	if rows.Next() {
@@ -245,10 +246,11 @@ func DeleteSection(pg *db.Postgres, ctx context.Context, id int) error {
 func GetAllSections(pg *db.Postgres, ctx context.Context) ([]model.Section, error) {
 	query := `SELECT * FROM sections`
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve all sections: %w", err)
 	}
-	defer rows.Close()
+
 	var sections []model.Section
 	sections, err = rows2Sections(rows)
 	if err != nil {
@@ -263,10 +265,10 @@ func GetGroupsFromSections(pg *db.Postgres, ctx context.Context, section int) ([
 		"section": section,
 	}
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve groups: %w", err)
 	}
-	defer rows.Close()
 	var groups []model.Group
 	groups, err = rows2Groups(rows)
 	if err != nil {

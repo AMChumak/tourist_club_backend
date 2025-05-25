@@ -38,11 +38,10 @@ func GetStrainForTrainer(pg *db.Postgres, ctx context.Context, trainer int, from
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to query GetStrainForTrainer: %w", err)
 	}
-
-	defer rows.Close()
 
 	strain, err := rows2Strain(rows)
 	if err != nil {

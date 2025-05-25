@@ -31,11 +31,10 @@ func GetAllChampionships(pg *db.Postgres, ctx context.Context) ([]model.Champion
 			  where extract(day from now() - date) > 0 and role = 1`
 
 	rows, err := pg.Db.Query(ctx, query)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to do query GetAllChampionships: %w", err)
 	}
-
-	defer rows.Close()
 
 	championships, err := rows2Champ(rows)
 	if err != nil {
@@ -59,11 +58,10 @@ func GetAllChampionshipsBySection(pg *db.Postgres, ctx context.Context, section 
 	}
 
 	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unable to query GetAllChampionshipsBySection: %w", err)
 	}
-
-	defer rows.Close()
 
 	championships, err := rows2Champ(rows)
 	if err != nil {
