@@ -129,3 +129,18 @@ func GetAllRouteTypes(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.RespondWithJSON(w, http.StatusOK, data)
 }
+
+func GetTouristsByTour(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	routeType := r.FormValue("type_id")
+
+	difficulty := r.FormValue("difficulty")
+
+	data, err := services.GetSuitablePersonsByRoute(routeType, difficulty)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondWithJSON(w, http.StatusOK, data)
+}

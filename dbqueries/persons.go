@@ -969,3 +969,31 @@ func GetManagersByBeginYear(pg *db.Postgres, ctx context.Context, year int) ([]m
 
 	return persons, nil
 }
+
+func GetTouristsByRouteType(pg *db.Postgres, ctx context.Context, routeTypeId int, routeTypeDiff int) ([]model.Person, error) {
+	query := `select id, name, surname, patronymic from (select persons.id, name, surname, patronymic, max(rt.difficulty) as lvl
+			  from persons
+			  join persons_tours
+			  on persons.id = persons_tours.person
+			  join tours
+			  on persons_tours.tour = tours.id
+			  join routes as rt on rt.id = ts.route
+			  where rt.type=@typeId
+			  group by persons.id)
+			  where lvl >= @diff`
+	args := pgx.NamedArgs{
+		"typeId": routeTypeId,
+		"diff":   routeTypeDiff,
+	}
+
+	rows, err := pg.Db.Query(ctx, query, args)
+	defer rows.Close()
+	if err != nil {
+		return nil, fmt.Errorf("unable to do query GetTouristsByRouteType: %w", err)
+	}
+	persons, err := rows2Persons(rows)
+	if err != nil {
+		return nil, err
+	}
+	return persons, nil
+}

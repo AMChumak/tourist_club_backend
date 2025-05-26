@@ -56,6 +56,7 @@ func main() {
 	r.HandleFunc("/tourists/trainer-instructor", handlers.FindTouristsWithTrainerInstructor).Methods("GET")
 	r.HandleFunc("/tourists/completed-all", handlers.FindTouristsCompletedAll).Methods("GET")
 	r.HandleFunc("/tourists/completed", handlers.FindTouristsCompletedRoutes).Methods("GET")
+	r.HandleFunc("/tourists/route-filter", handlers.GetTouristsByTour).Methods("GET")
 
 	r.HandleFunc("/persons/roles", handlers.GetPersonRole).Methods("GET")
 	r.HandleFunc("/persons/roles", handlers.SetPersonRole).Methods("POST")

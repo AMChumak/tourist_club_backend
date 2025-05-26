@@ -317,7 +317,7 @@ func GetRoutesByPlace(pg *db.Postgres, ctx context.Context, placeId int) ([]mode
 }
 
 func GetRoutesByLength(pg *db.Postgres, ctx context.Context, length int) ([]model.RouteId, error) {
-	query := `select count( id) 
+	query := `select id
 			  from routes
 			  where length_km >= @length`
 
@@ -339,7 +339,7 @@ func GetRoutesByLength(pg *db.Postgres, ctx context.Context, length int) ([]mode
 }
 
 func GetRoutesByDifficulty(pg *db.Postgres, ctx context.Context, difficulty int) ([]model.RouteId, error) {
-	query := `select count( id) 
+	query := `select id
 			  from routes
 			  where difficulty >= @difficulty`
 
@@ -381,7 +381,7 @@ func GetAllInstructors(pg *db.Postgres, ctx context.Context) ([]model.Person, er
 }
 
 func GetInstructorsByRole(pg *db.Postgres, ctx context.Context, role int) ([]model.Person, error) {
-	query := `select distinct persons.id
+	query := `select distinct persons.id, name, surname, patronymic
 			  from persons
 			  join tours
 			  on tours.instructor = persons.id
@@ -442,7 +442,7 @@ func GetInstructorsByCategory(pg *db.Postgres, ctx context.Context, routeType in
 }
 
 func GetInstructorsByCntTours(pg *db.Postgres, ctx context.Context, cntTours int) ([]model.Person, error) {
-	query := `select persons.id 
+	query := `select persons.id, name, surname, patronymic 
 			  from persons 
 			  join (
 			  select distinct persons.id, count(tours.id) as cnt
@@ -472,7 +472,7 @@ func GetInstructorsByCntTours(pg *db.Postgres, ctx context.Context, cntTours int
 }
 
 func GetInstructorsByTour(pg *db.Postgres, ctx context.Context, tourId int) ([]model.Person, error) {
-	query := `select distinct persons.id                        
+	query := `select distinct persons.id, name, surname, patronymic                      
 			  from persons
 			  join tours
 			  on tours.instructor = persons.id
@@ -499,7 +499,7 @@ func GetInstructorsByTour(pg *db.Postgres, ctx context.Context, tourId int) ([]m
 }
 
 func GetInstructorsByPlace(pg *db.Postgres, ctx context.Context, placeId int) ([]model.Person, error) {
-	query := `select distinct persons.id                        
+	query := `select distinct persons.id, name, surname, patronymic                        
 			  from persons
 			  join tours
 			  on tours.instructor = persons.id
